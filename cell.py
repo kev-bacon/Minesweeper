@@ -1,3 +1,4 @@
+import os
 import sys
 from tkinter import Button, Label, messagebox
 import random
@@ -48,6 +49,11 @@ class Cell:
                 for cell in self.surronded_cells: 
                     cell.show_cell()
             self.show_cell()
+            if Cell.cell_count == settings.MINES_COUNT: 
+                messagebox.showinfo("Congrats!", "You won the game!")
+        #cancel left and right click once cell is opened 
+        self.cell_btn_object.unbind('<Button-1>')
+        self.cell_btn_object.unbind('<Button-2>')
 
     def get_cell_by_axis(self, x,y):      
         #return cell object based on the value of x,y
@@ -87,9 +93,13 @@ class Cell:
         self.is_opened = True
 
     def show_mine(self): 
-        self.cell_btn_object.configure(text="NOOO! MINE")
-        messagebox.showinfo("Game Over", "You clicked on a mine!")
-        sys.exit()
+        self.cell_btn_object.configure(text="💣")
+        response = messagebox.askyesno("Game Over", "You clicked on a mine! Restart game?")
+        if response:
+            python = sys.executable
+            os.execl(python, python, *sys.argv)
+        else:
+            sys.exit()
 
     def right_click_actions(self, event): 
         if self.is_flagged: 
