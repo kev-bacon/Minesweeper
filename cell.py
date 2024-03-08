@@ -4,11 +4,13 @@ import settings
 class Cell: 
     all = [] 
     cell_count_label_object = None
+    cell_count = settings.CELL_COUNT
     def __init__(self, x, y, is_mine=False):
         self.x = x 
         self.y = y
         self.is_mine = is_mine
         self.cell_btn_object = None
+        self.is_opened = False
     
         # Append the object to the Cell.all list
         Cell.all.append(self)
@@ -28,7 +30,7 @@ class Cell:
             location,
             bg= "black",
             foreground="white",
-            text = f"Cells Left:{settings.CELL_COUNT}",
+            text = f"Cells Left:{Cell.cell_count}",
             width=12, 
             height=4,
             font=("", 30)
@@ -73,7 +75,13 @@ class Cell:
         return counter
 
     def show_cell(self): 
-        self.cell_btn_object.configure(text=self.surronded_cells_mines_length)
+        if not self.is_opened:
+            Cell.cell_count -= 1 
+            self.cell_btn_object.configure(text=self.surronded_cells_mines_length)
+            if self.cell_count_label_object: 
+                self.cell_count_label_object.configure(
+                    text = f"Cells Left: {Cell.cell_count}")
+        self.is_opened = True
 
     def show_mine(self): 
         # a logic to interrupt the game and display a message that player has lost!
