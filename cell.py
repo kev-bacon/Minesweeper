@@ -1,6 +1,8 @@
-from tkinter import Button, Label
+import sys
+from tkinter import Button, Label, messagebox
 import random
 import settings
+import ctypes
 class Cell: 
     all = [] 
     cell_count_label_object = None
@@ -11,6 +13,7 @@ class Cell:
         self.is_mine = is_mine
         self.cell_btn_object = None
         self.is_opened = False
+        self.is_flagged = False
     
         # Append the object to the Cell.all list
         Cell.all.append(self)
@@ -84,13 +87,22 @@ class Cell:
         self.is_opened = True
 
     def show_mine(self): 
-        # a logic to interrupt the game and display a message that player has lost!
         self.cell_btn_object.configure(text="NOOO! MINE")
+        messagebox.showinfo("Game Over", "You clicked on a mine!")
+        sys.exit()
 
     def right_click_actions(self, event): 
-        print(event)
-        print("I am right clicked!")
-        self.text = "Right-clicked"
+        if self.is_flagged: 
+            self.cell_btn_object.configure(
+                text=""
+            )
+            self.is_flagged = False
+        else:
+            self.cell_btn_object.configure(
+                text="FLAGGED"
+            )
+            self.is_flagged = True
+        
     
     @staticmethod
     def randomize_mines(): 
